@@ -41,7 +41,7 @@ const Header = () => {
 
 	const DrawerList = (
 		<Box sx={sx.mobile} width="200px" role="presentation" onClick={toggleDrawer}>
-		  <List>
+		  <List sx={{width: "inherit"}}>
 			{links.map((link, index) => (
 			  <ListItem key={link.label} disablePadding>
 				<ListItemButton>
