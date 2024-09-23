@@ -32,8 +32,6 @@ const Scoreboard = () => {
 	);
 };
 
-const sx = {
 
-};
 
 export default Scoreboard;

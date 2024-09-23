@@ -1,4 +1,4 @@
-import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
+import { Box, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { AnyObject } from "../types";
 
 const BoxScore = ({ game }: Props) => {
@@ -39,30 +39,63 @@ const BoxScore = ({ game }: Props) => {
 	];
 
 	return (
-		<Box sx={sx.box}>
-			<Box><Typography variant="caption">{startTime}</Typography></Box>
-			<List>
-				{teams.map((team) => (
-					<ListItem key={team.team}>
-						<Box>
-                            <img src={team.logo} alt={team.team} width="22" height="22" />
-                        </Box>
-						<ListItemText primary={team.team} primaryTypographyProps={{variant: "caption"}} />
-						<ListItemText secondary={team.record} secondaryTypographyProps={{variant: "caption"}} />
-					</ListItem>
-				))}
-			</List>
-		</Box>
+        <Box sx={sx.out}>
+            <Box sx={sx.box}>
+                <Box>
+                    <Typography variant="caption">{startTime}</Typography>
+                </Box>
+                <List sx={sx.list}>
+                    {teams.map((team) => (
+                        <ListItem key={team.team} sx={sx.item}>
+                            <Box sx={sx.team}>
+                                <img src={team.logo} alt={team.team} width="22" height="22" />
+                                <ListItemText
+                                    primary={team.team}
+                                    primaryTypographyProps={{ variant: "caption" }}
+                                    sx={sx.logo}
+                                />
+                            </Box>
+                            <Box>
+                                <ListItemText
+                                    secondary={team.record}
+                                    secondaryTypographyProps={{ variant: "caption" }}
+                                />
+                            </Box>
+                        </ListItem>
+                    ))}
+                </List>
+            </Box>
+            <Divider orientation="vertical" variant="middle" flexItem />
+        </Box>
 	);
 };
 
 const sx = {
 	box: {
-		// width: 100,
-		height: "60px",
-		border: "1px solid black",
+		width: "120px",
+		height: "75px",
 		padding: 1,
 	},
+	item: {
+		p: 0,
+		justifyContent: "space-between",
+		display: "flex",
+		alignItems: "center",
+	},
+	team: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "space-between",
+	},
+	logo: {
+		marginLeft: "5px",
+	},
+    list: {
+        p: 0
+    },
+    out: {
+        display: "flex",
+    }
 };
 
 interface Props {
