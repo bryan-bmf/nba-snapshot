@@ -1,8 +1,36 @@
-import { Box, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+    Box,
+    Divider,
+    List,
+    ListItem,
+    ListItemText,
+    Typography,
+} from "@mui/material";
 import { AnyObject } from "../types";
 
 const BoxScore = ({ game }: Props) => {
-	//find home/away teams index
+    // calculate team's series record
+	const calculateSeriesRecord = (teamId: string) => {
+		let seriesRecord = "0-0";
+		let wins = 0;
+		let losses = 0;
+
+		game.competitions[0].series.competitors.forEach((team: AnyObject) => {
+			// count wins if correct team
+			if (team.id === teamId) {
+				wins = team.wins;
+			}
+			// count other team's wins as losses for current team
+			else {
+				losses = team.wins;
+			}
+		});
+
+		seriesRecord = `${wins}-${losses}`;
+		return seriesRecord;
+	};
+
+	// find home/away teams index
 	const homeIndex = game.competitions[0].competitors.findIndex(
 		(team: AnyObject) => team.homeAway === "home"
 	);
@@ -10,77 +38,116 @@ const BoxScore = ({ game }: Props) => {
 		(team: AnyObject) => team.homeAway === "away"
 	);
 
+    // teams
 	const home = game.competitions[0].competitors[homeIndex];
 	const away = game.competitions[0].competitors[awayIndex];
 
-	const startTime = game.status.type.shortDetail.split(" - ")[1];
+    // if game has not started, it will show date and time of game
+    // else quarter and time left
+	let gameDetails = game.status.type.shortDetail;
+    let homeScore;
+    let awayScore;
+    let gameStatus = parseInt(game.status.type.id);
+    let fontColor = null;
+    if(gameStatus === 1)
+        gameDetails = gameDetails.replace(" EDT", "");
+    else {
+        homeScore = home.score;
+        awayScore = away.score;
+        fontColor = sx.gameDetails;
+    }
 
-	//home stuff
+	// home stuff
+	const homeId = home.id;
 	const homeTeam = home.team.abbreviation;
 	const homeTeamRecord = home.records[0].summary;
 	const homeLogo = home.team.logo;
 
-	//away stuff
+	// away stuff
+	const awayId = away.id;
 	const awayTeam = away.team.abbreviation;
 	const awayTeamRecord = away.records[0].summary;
 	const awayLogo = away.team.logo;
 
+	// preseason, regular season or playoffs
+	const seasonType = game.competitions[0].series.type;
+
+    // calculate playoff series record for teams in playoffs 
+    let homePlayoffSeriesRecord;
+    let awayPlayoffSeriesRecord;
+	if (seasonType === "playoff") {
+		homePlayoffSeriesRecord = calculateSeriesRecord(homeId);
+		awayPlayoffSeriesRecord = calculateSeriesRecord(awayId);
+	}
+
 	const teams = [
 		{
+			id: awayId,
 			team: awayTeam,
 			logo: awayLogo,
-			record: awayTeamRecord,
+			record: seasonType === "playoff" ? awayPlayoffSeriesRecord : awayTeamRecord,
+            score: awayScore
 		},
 		{
+			id: homeId,
 			team: homeTeam,
 			logo: homeLogo,
-			record: homeTeamRecord,
+			record: seasonType === "playoff" ? homePlayoffSeriesRecord : homeTeamRecord,
+            score: homeScore
 		},
 	];
 
 	return (
-        <Box sx={sx.out}>
-            <Box sx={sx.box}>
-                <Box>
-                    <Typography variant="caption">{startTime}</Typography>
-                </Box>
-                <List sx={sx.list}>
-                    {teams.map((team) => (
-                        <ListItem key={team.team} sx={sx.item}>
-                            <Box sx={sx.team}>
-                                <img src={team.logo} alt={team.team} width="22" height="22" />
-                                <ListItemText
-                                    primary={team.team}
-                                    primaryTypographyProps={{ variant: "caption" }}
-                                    sx={sx.logo}
-                                />
-                            </Box>
-                            <Box>
-                                <ListItemText
-                                    secondary={team.record}
-                                    secondaryTypographyProps={{ variant: "caption" }}
-                                />
-                            </Box>
-                        </ListItem>
-                    ))}
-                </List>
-            </Box>
-            <Divider orientation="vertical" variant="middle" flexItem />
-        </Box>
+		<Box sx={sx.out}>
+			<Box sx={sx.box}>
+                {/* GAME DETAILS */}
+				<Box>
+					<Typography variant="caption" sx={fontColor}>{gameDetails}</Typography>
+				</Box>
+				<List sx={sx.list}>
+					{teams.map((team) => (
+						<ListItem key={team.id} sx={sx.item}>
+                            {/* TEAM LOGO AND NAME */}
+							<Box sx={sx.team}>
+								<img
+									src={team.logo}
+									alt={team.team}
+									width="22"
+									height="22"
+								/>
+								<ListItemText
+									primary={team.team}
+									primaryTypographyProps={{ variant: "caption" }}
+									sx={sx.logo}
+								/>
+							</Box>
+                            {/* TEAM RECORD OR GAME SCORE */}
+							<Box>
+                                {/* If the game is in progress, show game score instead of team record */}
+								<ListItemText
+									secondary={gameStatus > 1 ? team.score : team.record}
+									secondaryTypographyProps={{ variant: "caption" }}
+								/>
+							</Box>
+						</ListItem>
+					))}
+				</List>
+			</Box>
+			<Divider orientation="vertical" variant="middle" flexItem />
+		</Box>
 	);
 };
 
 const sx = {
 	box: {
-		width: "120px",
+		width: "100px",
 		height: "75px",
 		padding: 1,
 	},
 	item: {
 		p: 0,
-		justifyContent: "space-between",
 		display: "flex",
-		alignItems: "center",
+		justifyContent: "space-between",
 	},
 	team: {
 		display: "flex",
@@ -90,11 +157,15 @@ const sx = {
 	logo: {
 		marginLeft: "5px",
 	},
-    list: {
-        p: 0
-    },
-    out: {
-        display: "flex",
+	list: {
+		p: 0,
+	},
+	out: {
+		display: "flex",
+	},
+    gameDetails: {
+        color: "red",
+        fontWeight: "bold",
     }
 };
 
