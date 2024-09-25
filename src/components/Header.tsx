@@ -67,6 +67,7 @@ const Header = () => {
 					<Button color="inherit">Teams</Button>
 					<Button color="inherit">Players</Button>
 					<Button color="inherit">Stats</Button>
+					<Button color="inherit">Switch</Button>
 				</Box>
                 {/* MOBILE VERSION */}
 				<Box sx={sx.mobile}>
