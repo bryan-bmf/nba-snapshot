@@ -49,6 +49,7 @@ const BoxScore = ({ game }: Props) => {
     let awayScore;
     let gameStatus = parseInt(game.status.type.id);
     let fontColor = null;
+
     if(gameStatus === 1)
         gameDetails = gameDetails.replace(" EDT", "");
     else {
@@ -71,6 +72,7 @@ const BoxScore = ({ game }: Props) => {
 
 	// preseason, regular season or playoffs
 	const seasonType = game.competitions[0].series.type;
+    const seriesSummary = <Typography variant="caption" sx={sx.summary}>{game.competitions[0].series.summary}</Typography>;
 
     // calculate playoff series record for teams in playoffs 
     let homePlayoffSeriesRecord;
@@ -103,6 +105,8 @@ const BoxScore = ({ game }: Props) => {
                 {/* GAME DETAILS */}
 				<Box>
 					<Typography variant="caption" sx={fontColor}>{gameDetails}</Typography>
+                    {/* Show summary if game has ended */}
+                    {gameStatus === 3 ? seriesSummary : null}
 				</Box>
 				<List sx={sx.list}>
 					{teams.map((team) => (
@@ -139,8 +143,13 @@ const BoxScore = ({ game }: Props) => {
 };
 
 const sx = {
+    out: {
+		display: "flex",
+	},
 	box: {
-		width: "100px",
+		width: "auto",
+        maxWidth: "200px",
+        minWidth: "100px",
 		height: "75px",
 		padding: 1,
 	},
@@ -160,13 +169,13 @@ const sx = {
 	list: {
 		p: 0,
 	},
-	out: {
-		display: "flex",
-	},
     gameDetails: {
         color: "red",
         fontWeight: "bold",
-    }
+    },
+    summary: {
+        marginLeft: 2,
+    },
 };
 
 interface Props {
