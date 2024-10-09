@@ -425,6 +425,7 @@ const Teams = () => {
 		},
 	};
 
+	// sort teams by conference and division
 	for (let team of data.data) {
 		const east = team.division as keyof typeof sortedData.East;
 		const west = team.division as keyof typeof sortedData.West;
@@ -435,17 +436,12 @@ const Teams = () => {
 		}
 	}
 
-	// console.log(sortedData);
-	// Object.entries(sortedData).map((conference: any) => console.log(conference));
-
 	return (
 		<Box sx={sx.flexContainer}>
 			<Box sx={sx.container}>
 				{/* HEADER ROW */}
-				<Box sx={{pb: 2}}>
-					<Typography variant="h3" >
-						NBA TEAMS
-					</Typography>
+				<Box sx={{ pb: 2 }}>
+					<Typography variant="h3">NBA TEAMS</Typography>
 				</Box>
 				{/* CONFERENCE ROW */}
 				<Box sx={sx.conference}>
@@ -488,10 +484,10 @@ const sx = {
 		justifyContent: "center",
 		alignItems: "center",
 		textAlign: "center",
-		pt: 2
+		pt: 2,
 	},
 	container: {
-		width: ["100vw", "90vw", "80vw", "75vw", "60vw"],
+		width: ["100vw", "90vw", "80vw", "75vw", "50vw"],
 	},
 	conference: {
 		display: "flex",
