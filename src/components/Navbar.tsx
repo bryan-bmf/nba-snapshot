@@ -83,7 +83,10 @@ const Navbar = () => {
 						<Button sx={sx.buttons}>Teams</Button>
 					</Link>
 
-					<Button color="inherit">Players</Button>
+					<Link to="/players">
+						<Button sx={sx.buttons}>Players</Button>
+					</Link>
+
 					<Button color="inherit">Stats</Button>
 					<Button color="inherit">Switch</Button>
 				</Box>
