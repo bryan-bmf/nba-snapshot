@@ -10,18 +10,73 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { playerData } from "../seed/data";
+import { AnyObject } from "../types";
 
 const PlayersTable = () => {
+    const [players, setPlayers] = useState<Array<AnyObject>>(playerData);
 	const [orderBy, setOrderBy] = useState<string>("name");
 	const [order, setOrder] = useState<string>("asc");
+
+	const columns = [
+		{
+			id: "LastName",
+			numeric: false,
+			label: "Name",
+		},
+		{
+			id: "Team",
+			numeric: false,
+			label: "Team",
+		},
+		{
+			id: "Jersey",
+			numeric: true,
+			label: "Jersey",
+		},
+		{
+			id: "Position",
+			numeric: false,
+			label: "Position",
+		},
+		{
+			id: "Height",
+			numeric: true,
+			label: "Height",
+		},
+		{
+			id: "Weight",
+			numeric: true,
+			label: "Weight (lbs)",
+		},
+		{
+			id: "BirthCountry",
+			numeric: false,
+			label: "Country",
+		},
+	];
 
 	const getHeight = (inches: number) => {
 		const feet = Math.floor(inches / 12);
 		const inchesRemaining = inches % 12;
 		return `${feet}'${inchesRemaining}"`;
 	};
+
+	const sortData = useMemo(() => {
+        let temp = [...players];
+		temp.sort((a, b) => {
+			let result = 0;
+			if (a[orderBy] < b[orderBy]) {
+				result = -1;
+			} else if (a[orderBy] > b[orderBy]) {
+				result = 1;
+			}
+			return result * (order === "asc" ? 1 : -1);
+		});
+        
+        setPlayers([...temp]);
+	}, [order, orderBy]);
 
 	const handleSort = (field: string) => {
 		setOrder(order === "asc" ? "desc" : "asc");
@@ -33,49 +88,47 @@ const PlayersTable = () => {
 			<Table sx={{ minWidth: 650 }} aria-label="simple table">
 				<TableHead sx={sx.header}>
 					<TableRow>
-						<TableCell>
-							<Box
-								component="span"
-								onClick={() => handleSort("name")}
-								sx={{ cursor: "pointer" }}
-							>
-								Name
-								{orderBy === "name" ? (
-									<Box component="span" sx={{ p: 0.5 }}>
-										{order === "desc" ? (
-											<ArrowDownwardIcon sx={sx.sortIcon} />
-										) : (
-											<ArrowUpwardIcon sx={sx.sortIcon} />
-										)}
-									</Box>
-								) : null}
-							</Box>
-						</TableCell>
-						<TableCell align="right">Team</TableCell>
-						<TableCell align="right">Jersey</TableCell>
-						<TableCell align="right">Position</TableCell>
-						<TableCell align="right">Height</TableCell>
-						<TableCell align="right">Weight (lbs)</TableCell>
-						<TableCell align="right">Country</TableCell>
+						{columns.map((column) => (
+							<TableCell key={column.id} align={column.numeric ? "right" : "left"}>
+								<Box
+									component="span"
+									onClick={() => handleSort(column.id)}
+									sx={{ cursor: "pointer" }}
+								>
+									{column.label}
+									{orderBy === column.id ? (
+										<Box component="span" sx={{ p: 0.5 }}>
+											{order === "desc" ? (
+												<ArrowDownwardIcon sx={sx.sortIcon} />
+											) : (
+												<ArrowUpwardIcon sx={sx.sortIcon} />
+											)}
+										</Box>
+									) : null}
+								</Box>
+							</TableCell>
+						))}
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{playerData.map((player) => (
+					{players.map((player) => (
 						<TableRow
 							key={player.PlayerID}
 							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
 						>
-							<TableCell component="th" scope="row">
+							<TableCell component="th" scope="row" align="left">
 								{`${player.LastName}, ${player.FirstName}`}
 							</TableCell>
-							<TableCell align="right">{player.Team}</TableCell>
+							<TableCell align="left">{player.Team}</TableCell>
 							<TableCell align="right">{player.Jersey}</TableCell>
-							<TableCell align="right">{player.Position}</TableCell>
+							<TableCell align="left">{player.Position}</TableCell>
 							<TableCell align="right">
 								{getHeight(player.Height)}
 							</TableCell>
 							<TableCell align="right">{player.Weight}</TableCell>
-							<TableCell align="right">{player.BirthCountry}</TableCell>
+							<TableCell align="left">
+								{player.BirthCountry}
+							</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
