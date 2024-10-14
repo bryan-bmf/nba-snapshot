@@ -7,17 +7,21 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
+    TablePagination,
     TableRow,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnyObject } from "../types";
 
 const PlayersTable = (props: any) => {
-    // const [players, setPlayers] = useState<Array<AnyObject>>(props.playersData);
-    let players: Array<AnyObject> = props.playersData;
+	// const [players, setPlayers] = useState<Array<AnyObject>>(props.playersData);
+	let players: Array<AnyObject> = [...props.playersData];
 	const [orderBy, setOrderBy] = useState<string>("LastName");
 	const [order, setOrder] = useState<string>("asc");
+	const [page, setPage] = useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
 	const columns = [
 		{
@@ -63,8 +67,8 @@ const PlayersTable = (props: any) => {
 		return `${feet}'${inchesRemaining}"`;
 	};
 
-	const sortData = useMemo(() => {
-        let temp = [...players];
+	const sortData = () => {
+		let temp = [...players];
 		temp.sort((a, b) => {
 			let result = 0;
 			if (a[orderBy] < b[orderBy]) {
@@ -74,14 +78,33 @@ const PlayersTable = (props: any) => {
 			}
 			return result * (order === "asc" ? 1 : -1);
 		});
-        
-        // setPlayers([...temp]);
-        players = [...temp];
-	}, [order, orderBy, props]);
+
+		// setPlayers([...temp]);
+		players = [...temp];
+	};
+
+	useMemo(() => {
+		sortData();
+	}, [order, orderBy, players]);
+
+    // whenever a filter is applied, set page back to 0 and sort data
+    useEffect(() => {
+        setPage(0);
+        sortData();
+    }, [props.flag]);
 
 	const handleSort = (field: string) => {
 		setOrder(order === "asc" ? "desc" : "asc");
 		setOrderBy(field);
+	};
+
+	const handlePageChange = (e: any, newPage: number) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event: any) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
 	};
 
 	return (
@@ -90,7 +113,10 @@ const PlayersTable = (props: any) => {
 				<TableHead sx={sx.header}>
 					<TableRow>
 						{columns.map((column) => (
-							<TableCell key={column.id} align={column.numeric ? "right" : "left"}>
+							<TableCell
+								key={column.id}
+								align={column.numeric ? "right" : "left"}
+							>
 								<Box
 									component="span"
 									onClick={() => handleSort(column.id)}
@@ -112,7 +138,13 @@ const PlayersTable = (props: any) => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{players.map((player) => (
+					{(rowsPerPage > 0
+						? players.slice(
+								page * rowsPerPage,
+								page * rowsPerPage + rowsPerPage
+						  )
+						: players
+					).map((player) => (
 						<TableRow
 							key={player.PlayerID}
 							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -127,12 +159,21 @@ const PlayersTable = (props: any) => {
 								{getHeight(player.Height)}
 							</TableCell>
 							<TableCell align="right">{player.Weight}</TableCell>
-							<TableCell align="left">
-								{player.BirthCountry}
-							</TableCell>
+							<TableCell align="left">{player.BirthCountry}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
+				<TableFooter>
+					<TableRow>
+						<TablePagination
+							count={players.length}
+							page={page}
+							onPageChange={handlePageChange}
+							rowsPerPage={rowsPerPage}
+							onRowsPerPageChange={handleChangeRowsPerPage}
+						/>
+					</TableRow>
+				</TableFooter>
 			</Table>
 		</TableContainer>
 	);

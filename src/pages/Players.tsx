@@ -19,6 +19,7 @@ const Players = () => {
 	const [team, setTeam] = useState<string>("");
 	const [position, setPosition] = useState<string>("");
 	const [country, setCountry] = useState<string>("");
+	const [filterChanged, setFilterChanged] = useState<boolean>(false);
 
 	let countries = [
 		...new Set(players.map((element) => element.BirthCountry)),
@@ -72,7 +73,11 @@ const Players = () => {
 		setFilteredPlayers(temp);
 	};
 
-	useEffect(() => handleFilters(), [letter, team, position, country]);
+	useEffect(() => {
+		handleFilters();
+        // used to bring pagination back to default page
+		setFilterChanged(!filterChanged);
+	}, [letter, team, position, country]);
 
 	return (
 		<Box>
@@ -150,7 +155,7 @@ const Players = () => {
 					</Select>
 				</FormControl>
 			</Box>
-			<PlayersTable playersData={filteredPlayers} />
+			<PlayersTable playersData={filteredPlayers} flag={filterChanged} />
 		</Box>
 	);
 };
