@@ -11,12 +11,12 @@ import {
     TableRow,
 } from "@mui/material";
 import { useMemo, useState } from "react";
-import { playerData } from "../seed/data";
 import { AnyObject } from "../types";
 
-const PlayersTable = () => {
-    const [players, setPlayers] = useState<Array<AnyObject>>(playerData);
-	const [orderBy, setOrderBy] = useState<string>("name");
+const PlayersTable = (props: any) => {
+    // const [players, setPlayers] = useState<Array<AnyObject>>(props.playersData);
+    let players: Array<AnyObject> = props.playersData;
+	const [orderBy, setOrderBy] = useState<string>("LastName");
 	const [order, setOrder] = useState<string>("asc");
 
 	const columns = [
@@ -64,6 +64,7 @@ const PlayersTable = () => {
 	};
 
 	const sortData = useMemo(() => {
+        console.log('sort', props.playersData, order, orderBy)
         let temp = [...players];
 		temp.sort((a, b) => {
 			let result = 0;
@@ -75,8 +76,9 @@ const PlayersTable = () => {
 			return result * (order === "asc" ? 1 : -1);
 		});
         
-        setPlayers([...temp]);
-	}, [order, orderBy]);
+        // setPlayers([...temp]);
+        players = [...temp];
+	}, [order, orderBy, props]);
 
 	const handleSort = (field: string) => {
 		setOrder(order === "asc" ? "desc" : "asc");
