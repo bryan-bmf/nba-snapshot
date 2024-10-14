@@ -13,12 +13,20 @@ import { AnyObject } from "../types";
 
 const Players = () => {
 	const [players, setPlayers] = useState<Array<AnyObject>>(playerData);
-	const [filteredPlayers, setFilteredPlayers] = useState<Array<AnyObject>>(players);
+	const [filteredPlayers, setFilteredPlayers] =
+		useState<Array<AnyObject>>(players);
 	const [letter, setLetter] = useState<string>("");
+	const [team, setTeam] = useState<string>("");
+	const [position, setPosition] = useState<string>("");
+	const [country, setCountry] = useState<string>("");
 
 	let countries = [
 		...new Set(players.map((element) => element.BirthCountry)),
 	].sort();
+
+	let teams = [...new Set(players.map((element) => element.Team))].sort();
+
+	let positions = ["C", "PF", "SF", "SG", "PG"];
 
 	let letters = [
 		"A",
@@ -55,36 +63,93 @@ const Players = () => {
 			players &&
 			players.filter((player) => {
 				return (
-					(!letter || letter === player.LastName.substring(0,1))
+					(!letter || letter === player.LastName.substring(0, 1)) &&
+					(!team || team === player.Team) &&
+					(!position || position === player.Position) &&
+					(!country || country === player.BirthCountry)
 				);
 			});
 		setFilteredPlayers(temp);
 	};
 
-    useEffect(() => handleFilters(), [letter]);
+	useEffect(() => handleFilters(), [letter, team, position, country]);
 
 	return (
 		<Box>
-			<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-				<InputLabel id="demo-simple-select-standard-label">
-					All Players
-				</InputLabel>
-				<Select
-					id="demo-select-small"
-					value={letter}
-					label="All Players"
-					onChange={(e: SelectChangeEvent) => setLetter(e.target.value)}
-				>
-					<MenuItem value="">
-						<em>All Players</em>
-					</MenuItem>
-					{letters.map((letter) => (
-						<MenuItem key={letter} value={letter}>
-							{letter}
+			<Box>
+				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+					<InputLabel>All Players</InputLabel>
+					<Select
+						value={letter}
+						label="All Players"
+						onChange={(e: SelectChangeEvent) => setLetter(e.target.value)}
+					>
+						<MenuItem value="">
+							<em>All Players</em>
 						</MenuItem>
-					))}
-				</Select>
-			</FormControl>
+						{letters.map((letter) => (
+							<MenuItem key={letter} value={letter}>
+								{letter}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+					<InputLabel>All Teams</InputLabel>
+					<Select
+						value={team}
+						label="All Players"
+						onChange={(e: SelectChangeEvent) => setTeam(e.target.value)}
+					>
+						<MenuItem value="">
+							<em>All Teams</em>
+						</MenuItem>
+						{teams.map((team) => (
+							<MenuItem key={team} value={team}>
+								{team}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+					<InputLabel>All Positions</InputLabel>
+					<Select
+						value={position}
+						label="All Positions"
+						onChange={(e: SelectChangeEvent) =>
+							setPosition(e.target.value)
+						}
+					>
+						<MenuItem value="">
+							<em>All Positions</em>
+						</MenuItem>
+						{positions.map((position) => (
+							<MenuItem key={position} value={position}>
+								{position}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+					<InputLabel>All Countries</InputLabel>
+					<Select
+						value={country}
+						label="All Countries"
+						onChange={(e: SelectChangeEvent) =>
+							setCountry(e.target.value)
+						}
+					>
+						<MenuItem value="">
+							<em>All Countries</em>
+						</MenuItem>
+						{countries.map((country) => (
+							<MenuItem key={country} value={country}>
+								{country}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+			</Box>
 			<PlayersTable playersData={filteredPlayers} />
 		</Box>
 	);

@@ -64,7 +64,6 @@ const PlayersTable = (props: any) => {
 	};
 
 	const sortData = useMemo(() => {
-        console.log('sort', props.playersData, order, orderBy)
         let temp = [...players];
 		temp.sort((a, b) => {
 			let result = 0;
