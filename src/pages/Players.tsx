@@ -5,6 +5,7 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
+    SxProps,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PlayersTable from "../components/PlayersTable";
@@ -75,14 +76,14 @@ const Players = () => {
 
 	useEffect(() => {
 		handleFilters();
-        // used to bring pagination back to default page
+		// used to bring pagination back to default page
 		setFilterChanged(!filterChanged);
 	}, [letter, team, position, country]);
 
 	return (
-		<Box>
-			<Box>
-				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+		<Box sx={sx.page}>
+			<Box sx={sx.container}>
+				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Players</InputLabel>
 					<Select
 						value={letter}
@@ -99,7 +100,7 @@ const Players = () => {
 						))}
 					</Select>
 				</FormControl>
-				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Teams</InputLabel>
 					<Select
 						value={team}
@@ -116,7 +117,7 @@ const Players = () => {
 						))}
 					</Select>
 				</FormControl>
-				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Positions</InputLabel>
 					<Select
 						value={position}
@@ -135,7 +136,7 @@ const Players = () => {
 						))}
 					</Select>
 				</FormControl>
-				<FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Countries</InputLabel>
 					<Select
 						value={country}
@@ -158,6 +159,26 @@ const Players = () => {
 			<PlayersTable playersData={filteredPlayers} flag={filterChanged} />
 		</Box>
 	);
+};
+
+const sx: { [key: string]: SxProps } = {
+	container: {
+		// display: "flex",
+		// justifyContent: "center",
+		// alignItems: "center",
+		// flexDirection: ["column", "row"],
+	},
+	select: { 
+        m: 1, 
+        minWidth: ["100%", 120]
+    },
+    page: {
+        width:"100vw",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+		alignItems: "center",
+    }
 };
 
 export default Players;

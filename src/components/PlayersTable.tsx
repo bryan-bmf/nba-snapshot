@@ -87,11 +87,11 @@ const PlayersTable = (props: any) => {
 		sortData();
 	}, [order, orderBy, players]);
 
-    // whenever a filter is applied, set page back to 0 and sort data
-    useEffect(() => {
-        setPage(0);
-        sortData();
-    }, [props.flag]);
+	// whenever a filter is applied, set page back to 0 and sort data
+	useEffect(() => {
+		setPage(0);
+		sortData();
+	}, [props.flag]);
 
 	const handleSort = (field: string) => {
 		setOrder(order === "asc" ? "desc" : "asc");
@@ -108,74 +108,80 @@ const PlayersTable = (props: any) => {
 	};
 
 	return (
-		<TableContainer component={Paper}>
-			<Table sx={{ minWidth: 650 }} aria-label="simple table">
-				<TableHead sx={sx.header}>
-					<TableRow>
-						{columns.map((column) => (
-							<TableCell
-								key={column.id}
-								align={column.numeric ? "right" : "left"}
-							>
-								<Box
-									component="span"
-									onClick={() => handleSort(column.id)}
-									sx={{ cursor: "pointer" }}
+		<Paper sx={sx.paper}>
+			<TableContainer sx={sx.container}>
+				<Table sx={sx.table} aria-label="simple table">
+					<TableHead sx={sx.header}>
+						<TableRow>
+							{columns.map((column) => (
+								<TableCell
+									key={column.id}
+									align={column.numeric ? "right" : "left"}
 								>
-									{column.label}
-									{orderBy === column.id ? (
-										<Box component="span" sx={{ p: 0.5 }}>
-											{order === "desc" ? (
-												<ArrowDownwardIcon sx={sx.sortIcon} />
-											) : (
-												<ArrowUpwardIcon sx={sx.sortIcon} />
-											)}
-										</Box>
-									) : null}
-								</Box>
-							</TableCell>
-						))}
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{(rowsPerPage > 0
-						? players.slice(
-								page * rowsPerPage,
-								page * rowsPerPage + rowsPerPage
-						  )
-						: players
-					).map((player) => (
-						<TableRow
-							key={player.PlayerID}
-							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-						>
-							<TableCell component="th" scope="row" align="left">
-								{`${player.LastName}, ${player.FirstName}`}
-							</TableCell>
-							<TableCell align="left">{player.Team}</TableCell>
-							<TableCell align="right">{player.Jersey}</TableCell>
-							<TableCell align="left">{player.Position}</TableCell>
-							<TableCell align="right">
-								{getHeight(player.Height)}
-							</TableCell>
-							<TableCell align="right">{player.Weight}</TableCell>
-							<TableCell align="left">{player.BirthCountry}</TableCell>
+									<Box
+										component="span"
+										onClick={() => handleSort(column.id)}
+										sx={sx.label}
+									>
+										{column.label}
+										{orderBy === column.id ? (
+											<Box component="span" sx={{ p: 0.5 }}>
+												{order === "desc" ? (
+													<ArrowDownwardIcon sx={sx.sortIcon} />
+												) : (
+													<ArrowUpwardIcon sx={sx.sortIcon} />
+												)}
+											</Box>
+										) : null}
+									</Box>
+								</TableCell>
+							))}
 						</TableRow>
-					))}
-				</TableBody>
-				<TableFooter>
-					<TableRow>
-						<TablePagination
-							count={players.length}
-							page={page}
-							onPageChange={handlePageChange}
-							rowsPerPage={rowsPerPage}
-							onRowsPerPageChange={handleChangeRowsPerPage}
-						/>
-					</TableRow>
-				</TableFooter>
-			</Table>
-		</TableContainer>
+					</TableHead>
+					<TableBody>
+						{(rowsPerPage > 0
+							? players.slice(
+									page * rowsPerPage,
+									page * rowsPerPage + rowsPerPage
+							  )
+							: players
+						).map((player) => (
+							<TableRow
+								key={player.PlayerID}
+								sx={{
+									"&:last-child td, &:last-child th": { border: 0 },
+								}}
+							>
+								<TableCell component="th" scope="row" align="left">
+									{`${player.LastName}, ${player.FirstName}`}
+								</TableCell>
+								<TableCell align="left">{player.Team}</TableCell>
+								<TableCell align="right">{player.Jersey}</TableCell>
+								<TableCell align="left">{player.Position}</TableCell>
+								<TableCell align="right">
+									{getHeight(player.Height)}
+								</TableCell>
+								<TableCell align="right">{player.Weight}</TableCell>
+								<TableCell align="left">
+									{player.BirthCountry}
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+					<TableFooter>
+						<TableRow>
+							<TablePagination
+								count={players.length}
+								page={page}
+								onPageChange={handlePageChange}
+								rowsPerPage={rowsPerPage}
+								onRowsPerPageChange={handleChangeRowsPerPage}
+							/>
+						</TableRow>
+					</TableFooter>
+				</Table>
+			</TableContainer>
+		</Paper>
 	);
 };
 
@@ -189,6 +195,20 @@ const sx = {
 		fontSize: "18px",
 		marginBottom: "3px",
 	},
+	table: {
+		height: "80vh",
+	},
+	container: {
+		overflowX: "auto",
+	},
+	paper: {
+		width: "80%",
+        p: 2
+	},
+	label: { 
+        cursor: "pointer", 
+        fontSize: "x-small" 
+    },
 };
 
 export default PlayersTable;

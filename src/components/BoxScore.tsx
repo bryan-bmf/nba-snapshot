@@ -1,10 +1,10 @@
 import {
-    Box,
-    Divider,
-    List,
-    ListItem,
-    ListItemText,
-    Typography,
+	Box,
+	Divider,
+	List,
+	ListItem,
+	ListItemText,
+	Typography,
 } from "@mui/material";
 import { AnyObject } from "../types";
 
@@ -71,13 +71,13 @@ const BoxScore = ({ game }: Props) => {
 	const awayLogo = away.team.logo;
 
 	// preseason, regular season or playoffs
-	const seasonType = game.competitions[0].series.type;
-    const seriesSummary = <Typography variant="caption" sx={sx.summary}>{game.competitions[0].series.summary}</Typography>;
+	const seasonType = game.season.type;
+    const seriesSummary = seasonType === 3 ? <Typography variant="caption" sx={sx.summary}>{game.competitions[0].series.summary}</Typography> : null;
 
     // calculate playoff series record for teams in playoffs 
     let homePlayoffSeriesRecord;
     let awayPlayoffSeriesRecord;
-	if (seasonType === "playoff") {
+	if (seasonType === 3) {
 		homePlayoffSeriesRecord = calculateSeriesRecord(homeId);
 		awayPlayoffSeriesRecord = calculateSeriesRecord(awayId);
 	}
