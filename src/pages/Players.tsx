@@ -4,8 +4,7 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    SelectChangeEvent,
-    SxProps,
+    SelectChangeEvent
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PlayersTable from "../components/PlayersTable";
@@ -82,7 +81,7 @@ const Players = () => {
 
 	return (
 		<Box sx={sx.page}>
-			<Box sx={sx.container}>
+			<Box>
 				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Players</InputLabel>
 					<Select
@@ -161,19 +160,14 @@ const Players = () => {
 	);
 };
 
-const sx: { [key: string]: SxProps } = {
-	container: {
-		// display: "flex",
-		// justifyContent: "center",
-		// alignItems: "center",
-		// flexDirection: ["column", "row"],
-	},
+const sx = {
 	select: { 
         m: 1, 
         minWidth: ["100%", 120]
     },
     page: {
         width:"100vw",
+        // height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

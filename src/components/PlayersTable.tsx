@@ -12,6 +12,8 @@ import {
     TablePagination,
     TableRow,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useMemo, useState } from "react";
 import { AnyObject } from "../types";
 
@@ -22,6 +24,10 @@ const PlayersTable = (props: any) => {
 	const [order, setOrder] = useState<string>("asc");
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+	// check if mobile
+	const theme = useTheme();
+	const mobile = useMediaQuery(theme.breakpoints.only("xs"));
 
 	const columns = [
 		{
@@ -91,11 +97,15 @@ const PlayersTable = (props: any) => {
 	useEffect(() => {
 		setPage(0);
 		sortData();
-	}, [props.flag]);
+
+		mobile ? setRowsPerPage(players.length) : setRowsPerPage(10);
+	}, [props.flag, mobile]);
 
 	const handleSort = (field: string) => {
-		setOrder(order === "asc" ? "desc" : "asc");
-		setOrderBy(field);
+		if (!mobile) {
+			setOrder(order === "asc" ? "desc" : "asc");
+			setOrderBy(field);
+		}
 	};
 
 	const handlePageChange = (e: any, newPage: number) => {
@@ -110,13 +120,15 @@ const PlayersTable = (props: any) => {
 	return (
 		<Paper sx={sx.paper}>
 			<TableContainer sx={sx.container}>
-				<Table sx={sx.table} aria-label="simple table">
-					<TableHead sx={sx.header}>
-						<TableRow>
-							{columns.map((column) => (
+				<Table aria-label="simple table">
+					<TableHead>
+						<TableRow sx={sx.header}>
+							{columns.map((column, index) => (
 								<TableCell
 									key={column.id}
 									align={column.numeric ? "right" : "left"}
+                                    sx={index === 0 && mobile ? sx.stickyHeader : null}
+
 								>
 									<Box
 										component="span"
@@ -124,15 +136,23 @@ const PlayersTable = (props: any) => {
 										sx={sx.label}
 									>
 										{column.label}
-										{orderBy === column.id ? (
-											<Box component="span" sx={{ p: 0.5 }}>
-												{order === "desc" ? (
-													<ArrowDownwardIcon sx={sx.sortIcon} />
-												) : (
-													<ArrowUpwardIcon sx={sx.sortIcon} />
-												)}
-											</Box>
-										) : null}
+										{mobile ? null : (
+											<>
+												{orderBy === column.id ? (
+													<Box component="span" sx={{ p: 0.5 }}>
+														{order === "desc" ? (
+															<ArrowDownwardIcon
+																sx={sx.sortIcon}
+															/>
+														) : (
+															<ArrowUpwardIcon
+																sx={sx.sortIcon}
+															/>
+														)}
+													</Box>
+												) : null}
+											</>
+										)}
 									</Box>
 								</TableCell>
 							))}
@@ -152,7 +172,7 @@ const PlayersTable = (props: any) => {
 									"&:last-child td, &:last-child th": { border: 0 },
 								}}
 							>
-								<TableCell component="th" scope="row" align="left">
+								<TableCell align="left" sx={mobile ? sx.stickyColumn : null}>
 									{`${player.LastName}, ${player.FirstName}`}
 								</TableCell>
 								<TableCell align="left">{player.Team}</TableCell>
@@ -168,17 +188,19 @@ const PlayersTable = (props: any) => {
 							</TableRow>
 						))}
 					</TableBody>
-					<TableFooter>
-						<TableRow>
-							<TablePagination
-								count={players.length}
-								page={page}
-								onPageChange={handlePageChange}
-								rowsPerPage={rowsPerPage}
-								onRowsPerPageChange={handleChangeRowsPerPage}
-							/>
-						</TableRow>
-					</TableFooter>
+					{mobile ? null : (
+						<TableFooter sx={sx.footer}>
+							<TableRow>
+								<TablePagination
+									count={players.length}
+									page={page}
+									onPageChange={handlePageChange}
+									rowsPerPage={rowsPerPage}
+									onRowsPerPageChange={handleChangeRowsPerPage}
+								/>
+							</TableRow>
+						</TableFooter>
+					)}
 				</Table>
 			</TableContainer>
 		</Paper>
@@ -187,28 +209,51 @@ const PlayersTable = (props: any) => {
 
 const sx = {
 	header: {
-		backgroundColor: "rgba(255, 7, 0, 0.55)",
+		backgroundColor: "rgba(255, 7, 0)",
+		position: "sticky",
+		top: 0,
+        zIndex: 2,
 	},
 	sortIcon: {
 		verticalAlign: "middle",
 		opacity: 1,
-		fontSize: "18px",
 		marginBottom: "3px",
-	},
-	table: {
-		height: "80vh",
+		// fontSize: "x-small",
 	},
 	container: {
-		overflowX: "auto",
+		overflow: "auto",
+		maxHeight: "80vh",
 	},
 	paper: {
 		width: "80%",
-        p: 2
+		p: 2,
+		m: 2,
 	},
-	label: { 
-        cursor: "pointer", 
-        fontSize: "x-small" 
+	label: {
+		cursor: "pointer",
+		// fontSize: "x-small",
+	},
+    stickyColumn: {
+        position: "sticky",
+        left: 0,
+        zIndex: 1,
+        backgroundColor: "white",
+        borderRight: "1px solid rgba(239, 239, 240)",
+        boxShadow: "1px 0 0 0 rgba(239, 239, 240)",
+        p: 2
     },
+    stickyHeader: {
+        backgroundColor: "rgba(255, 7, 0)",
+        position: "sticky",
+        left: 0,
+        borderRight: "1px solid rgba(239, 239, 240)",
+        boxShadow: "1px 0 0 0 rgba(239, 239, 240)"
+    },
+    footer: {
+		backgroundColor: "white",
+		position: "sticky",
+		bottom: 0,
+	},
 };
 
 export default PlayersTable;

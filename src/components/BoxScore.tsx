@@ -61,13 +61,13 @@ const BoxScore = ({ game }: Props) => {
 	// home stuff
 	const homeId = home.id;
 	const homeTeam = home.team.abbreviation;
-	const homeTeamRecord = home.records[0].summary;
+	const homeTeamRecord = home.records ? home.records[0].summary : null;
 	const homeLogo = home.team.logo;
 
 	// away stuff
 	const awayId = away.id;
 	const awayTeam = away.team.abbreviation;
-	const awayTeamRecord = away.records[0].summary;
+	const awayTeamRecord = away.records ? away.records[0].summary : null;
 	const awayLogo = away.team.logo;
 
 	// preseason, regular season or playoffs
