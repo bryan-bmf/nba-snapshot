@@ -9,7 +9,7 @@ const Scoreboard = () => {
 	const fetchGames = async (controller: AbortController) => {
 		try {
 			const url =
-				"http://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard";
+				"http://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard";
 			const resp = await fetch(url, {
 				// attach the controller to the request
 				signal: controller.signal,
@@ -42,6 +42,7 @@ const sx = {
 	scoreboard: {
 		display: "flex",
 		overflow: "auto",
+		pb: 4
 	},
 };
 
