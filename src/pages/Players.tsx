@@ -1,10 +1,10 @@
 import {
-    Box,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    SelectChangeEvent
+	Box,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Select,
+	SelectChangeEvent,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PlayersTable from "../components/PlayersTable";
@@ -73,10 +73,31 @@ const Players = () => {
 		setFilteredPlayers(temp);
 	};
 
+	let playersArr: any = [];
+	const fetchAsync = async (url: string) => {
+		const resp = await fetch(url);
+		const data = await resp.json();
+		return data;
+	};
+
+	const getAllPlayers = async () => {
+		const url =
+			"https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/athletes?limit=1000&active=true";
+		const data = await fetchAsync(url);
+		const players = data.items;
+
+		await Promise.all(players.map(async (player: AnyObject) => {
+			let playerObj = await fetchAsync(player.$ref);
+			playersArr.push(playerObj);
+		}))
+		console.log(playersArr[0].displayName);
+	};
+
 	useEffect(() => {
 		handleFilters();
 		// used to bring pagination back to default page
 		setFilterChanged(!filterChanged);
+		getAllPlayers();
 	}, [letter, team, position, country]);
 
 	return (
@@ -161,18 +182,18 @@ const Players = () => {
 };
 
 const sx = {
-	select: { 
-        m: 1, 
-        minWidth: ["100%", 120]
-    },
-    page: {
-        width:"100vw",
-        // height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
+	select: {
+		m: 1,
+		minWidth: ["100%", 120],
+	},
+	page: {
+		width: "100vw",
+		// height: "100vh",
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center",
 		alignItems: "center",
-    }
+	},
 };
 
 export default Players;
