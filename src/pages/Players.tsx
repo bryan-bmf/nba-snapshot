@@ -20,7 +20,6 @@ const Players = () => {
 	const [country, setCountry] = useState<string>("");
 	const [filterChanged, setFilterChanged] = useState<boolean>(false);
 	const [isLoading, setLoading] = useState(true); // Loading state
-	let playersList: Array<AnyObject> = []; // keep an intact list of players to use for filters
 
 	let countries = allPlayers
 		? [...new Set(allPlayers.map((element) => element.country))].sort()
@@ -131,6 +130,14 @@ const Players = () => {
 		}
 	};
 
+	const handleClearFilters = () => {
+		setLetter("");
+        setTeam("");
+        setPosition("");
+        setCountry("");
+        setFilterChanged(!filterChanged);
+	}
+
 	// initial api call
 	useEffect(() => {
 		getAllPlayers();
@@ -228,7 +235,7 @@ const Players = () => {
 				</FormControl>
 			</Box>
 			{players && (
-				<PlayersTable playersData={players} flag={filterChanged} />
+				<PlayersTable playersData={players} flag={filterChanged} clearFilters={handleClearFilters} />
 			)}
 		</Box>
 	);

@@ -166,11 +166,11 @@ const PlayersTable = (props: any) => {
 					{players.length < 1 ? (
 						<TableBody>
 							<TableRow>
-								<TableCell colSpan={9} align="center">
+								<TableCell colSpan={mobile ? 4 : 9} align="center">
 									<Typography variant="h5" gutterBottom p={2}>
 										No players found
 									</Typography>
-									<Button>Reset filters</Button>
+									<Button variant="contained" onClick={props.clearFilters}>Reset filters</Button>
 								</TableCell>
 							</TableRow>
 						</TableBody>
