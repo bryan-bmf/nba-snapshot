@@ -1,16 +1,18 @@
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableFooter,
-    TableHead,
-    TablePagination,
-    TableRow,
+	Box,
+	Button,
+	Paper,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableFooter,
+	TableHead,
+	TablePagination,
+	TableRow,
+	Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -20,7 +22,7 @@ import { AnyObject } from "../types";
 const PlayersTable = (props: any) => {
 	// const [players, setPlayers] = useState<Array<AnyObject>>(props.playersData);
 	let players: Array<AnyObject> = [...props.playersData];
-	const [orderBy, setOrderBy] = useState<string>("LastName");
+	const [orderBy, setOrderBy] = useState<string>("lastName");
 	const [order, setOrder] = useState<string>("asc");
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -31,47 +33,51 @@ const PlayersTable = (props: any) => {
 
 	const columns = [
 		{
-			id: "LastName",
+			id: "lastName",
 			numeric: false,
 			label: "Name",
 		},
 		{
-			id: "Team",
+			id: "team",
 			numeric: false,
 			label: "Team",
 		},
 		{
-			id: "Jersey",
+			id: "jersey",
 			numeric: true,
 			label: "Jersey",
 		},
 		{
-			id: "Position",
+			id: "position",
 			numeric: false,
 			label: "Position",
 		},
 		{
-			id: "Height",
+			id: "height",
 			numeric: true,
 			label: "Height",
 		},
 		{
-			id: "Weight",
+			id: "weight",
 			numeric: true,
 			label: "Weight (lbs)",
 		},
 		{
-			id: "BirthCountry",
+			id: "college",
+			numeric: false,
+			label: "College",
+		},
+		{
+			id: "drafted",
+			numeric: true,
+			label: "Drafted",
+		},
+		{
+			id: "country",
 			numeric: false,
 			label: "Country",
 		},
 	];
-
-	const getHeight = (inches: number) => {
-		const feet = Math.floor(inches / 12);
-		const inchesRemaining = inches % 12;
-		return `${feet}'${inchesRemaining}"`;
-	};
 
 	const sortData = () => {
 		let temp = [...players];
@@ -127,8 +133,7 @@ const PlayersTable = (props: any) => {
 								<TableCell
 									key={column.id}
 									align={column.numeric ? "right" : "left"}
-                                    sx={index === 0 && mobile ? sx.stickyHeader : null}
-
+									sx={index === 0 && mobile ? sx.stickyHeader : null}
 								>
 									<Box
 										component="span"
@@ -158,36 +163,50 @@ const PlayersTable = (props: any) => {
 							))}
 						</TableRow>
 					</TableHead>
-					<TableBody>
-						{(rowsPerPage > 0
-							? players.slice(
-									page * rowsPerPage,
-									page * rowsPerPage + rowsPerPage
-							  )
-							: players
-						).map((player) => (
-							<TableRow
-								key={player.PlayerID}
-								sx={{
-									"&:last-child td, &:last-child th": { border: 0 },
-								}}
-							>
-								<TableCell align="left" sx={mobile ? sx.stickyColumn : null}>
-									{`${player.LastName}, ${player.FirstName}`}
-								</TableCell>
-								<TableCell align="left">{player.Team}</TableCell>
-								<TableCell align="right">{player.Jersey}</TableCell>
-								<TableCell align="left">{player.Position}</TableCell>
-								<TableCell align="right">
-									{getHeight(player.Height)}
-								</TableCell>
-								<TableCell align="right">{player.Weight}</TableCell>
-								<TableCell align="left">
-									{player.BirthCountry}
+					{players.length < 1 ? (
+						<TableBody>
+							<TableRow>
+								<TableCell colSpan={mobile ? 4 : 9} align="center">
+									<Typography variant="h5" gutterBottom p={2}>
+										No players found
+									</Typography>
+									<Button variant="contained" onClick={props.clearFilters}>Reset filters</Button>
 								</TableCell>
 							</TableRow>
-						))}
-					</TableBody>
+						</TableBody>
+					) : (
+						<TableBody>
+							{(rowsPerPage > 0
+								? players.slice(
+										page * rowsPerPage,
+										page * rowsPerPage + rowsPerPage
+								  )
+								: players
+							).map((player) => (
+								<TableRow
+									key={player.id}
+									sx={{
+										"&:last-child td, &:last-child th": { border: 0 },
+									}}
+								>
+									<TableCell
+										align="left"
+										sx={mobile ? sx.stickyColumn : null}
+									>
+										{`${player.lastName}, ${player.firstName}`}
+									</TableCell>
+									<TableCell align="left">{player.team}</TableCell>
+									<TableCell align="right">{player.jersey}</TableCell>
+									<TableCell align="left">{player.position}</TableCell>
+									<TableCell align="right">{player.height}</TableCell>
+									<TableCell align="right">{player.weight}</TableCell>
+									<TableCell align="left">{player.college}</TableCell>
+									<TableCell align="right">{player.drafted}</TableCell>
+									<TableCell align="left">{player.country}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					)}
 					{mobile ? null : (
 						<TableFooter sx={sx.footer}>
 							<TableRow>
@@ -212,7 +231,7 @@ const sx = {
 		backgroundColor: "rgba(255, 7, 0)",
 		position: "sticky",
 		top: 0,
-        zIndex: 2,
+		zIndex: 2,
 	},
 	sortIcon: {
 		verticalAlign: "middle",
@@ -233,23 +252,23 @@ const sx = {
 		cursor: "pointer",
 		// fontSize: "x-small",
 	},
-    stickyColumn: {
-        position: "sticky",
-        left: 0,
-        zIndex: 1,
-        backgroundColor: "white",
-        borderRight: "1px solid rgba(239, 239, 240)",
-        boxShadow: "1px 0 0 0 rgba(239, 239, 240)",
-        p: 2
-    },
-    stickyHeader: {
-        backgroundColor: "rgba(255, 7, 0)",
-        position: "sticky",
-        left: 0,
-        borderRight: "1px solid rgba(239, 239, 240)",
-        boxShadow: "1px 0 0 0 rgba(239, 239, 240)"
-    },
-    footer: {
+	stickyColumn: {
+		position: "sticky",
+		left: 0,
+		zIndex: 1,
+		backgroundColor: "white",
+		borderRight: "1px solid rgba(239, 239, 240)",
+		boxShadow: "1px 0 0 0 rgba(239, 239, 240)",
+		p: 2,
+	},
+	stickyHeader: {
+		backgroundColor: "rgba(255, 7, 0)",
+		position: "sticky",
+		left: 0,
+		borderRight: "1px solid rgba(239, 239, 240)",
+		boxShadow: "1px 0 0 0 rgba(239, 239, 240)",
+	},
+	footer: {
 		backgroundColor: "white",
 		position: "sticky",
 		bottom: 0,
