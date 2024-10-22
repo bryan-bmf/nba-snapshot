@@ -132,11 +132,11 @@ const Players = () => {
 
 	const handleClearFilters = () => {
 		setLetter("");
-        setTeam("");
-        setPosition("");
-        setCountry("");
-        setFilterChanged(!filterChanged);
-	}
+		setTeam("");
+		setPosition("");
+		setCountry("");
+		setFilterChanged(!filterChanged);
+	};
 
 	// initial api call
 	useEffect(() => {
@@ -235,7 +235,11 @@ const Players = () => {
 				</FormControl>
 			</Box>
 			{players && (
-				<PlayersTable playersData={players} flag={filterChanged} clearFilters={handleClearFilters} />
+				<PlayersTable
+					playersData={players}
+					flag={filterChanged}
+					clearFilters={handleClearFilters}
+				/>
 			)}
 		</Box>
 	);
