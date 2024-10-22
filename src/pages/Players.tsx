@@ -1,5 +1,6 @@
 import {
 	Box,
+	CircularProgress,
 	FormControl,
 	InputLabel,
 	MenuItem,
@@ -8,24 +9,26 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PlayersTable from "../components/PlayersTable";
-import { playerData } from "../seed/data";
 import { AnyObject } from "../types";
 
 const Players = () => {
-	const [players, setPlayers] = useState<Array<AnyObject>>(playerData);
-	const [filteredPlayers, setFilteredPlayers] =
-		useState<Array<AnyObject>>(players);
+	const [players, setPlayers] = useState<Array<AnyObject>>();
+	const [allPlayers, setAllPlayers] = useState<Array<AnyObject>>();
 	const [letter, setLetter] = useState<string>("");
 	const [team, setTeam] = useState<string>("");
 	const [position, setPosition] = useState<string>("");
 	const [country, setCountry] = useState<string>("");
 	const [filterChanged, setFilterChanged] = useState<boolean>(false);
+	const [isLoading, setLoading] = useState(true); // Loading state
+	let playersList: Array<AnyObject> = []; // keep an intact list of players to use for filters
 
-	let countries = [
-		...new Set(players.map((element) => element.BirthCountry)),
-	].sort();
+	let countries = allPlayers
+		? [...new Set(allPlayers.map((element) => element.country))].sort()
+		: [];
 
-	let teams = [...new Set(players.map((element) => element.Team))].sort();
+	let teams = allPlayers
+		? [...new Set(allPlayers.map((element) => element.team))].sort()
+		: [];
 
 	let positions = ["C", "PF", "SF", "SG", "PG"];
 
@@ -61,23 +64,26 @@ const Players = () => {
 	const handleFilters = () => {
 		//perform all filters at the same time
 		let temp =
-			players &&
-			players.filter((player) => {
+			allPlayers &&
+			allPlayers.filter((player) => {
 				return (
-					(!letter || letter === player.LastName.substring(0, 1)) &&
-					(!team || team === player.Team) &&
-					(!position || position === player.Position) &&
-					(!country || country === player.BirthCountry)
+					(!letter || letter === player.lastName.substring(0, 1)) &&
+					(!team || team === player.team) &&
+					(!position || position === player.position) &&
+					(!country || country === player.country)
 				);
 			});
-		setFilteredPlayers(temp);
+		setPlayers(temp);
 	};
 
-	let playersArr: any = [];
 	const fetchAsync = async (url: string) => {
-		const resp = await fetch(url);
-		const data = await resp.json();
-		return data;
+		try {
+			const resp = await fetch(url);
+			const data = await resp.json();
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const getAllPlayers = async () => {
@@ -86,19 +92,64 @@ const Players = () => {
 		const data = await fetchAsync(url);
 		const players = data.items;
 
-		await Promise.all(players.map(async (player: AnyObject) => {
-			let playerObj = await fetchAsync(player.$ref);
-			playersArr.push(playerObj);
-		}))
-		console.log(playersArr[0].displayName);
+		// get player info plus team and college
+		const playersArr = await Promise.all(
+			players.map(async (player: AnyObject) => {
+				let obj: AnyObject = {};
+				let currentPlayer = await fetchAsync(player.$ref);
+				let team = await fetchAsync(currentPlayer.team.$ref);
+
+				// not all players went to college
+				obj.college = "";
+				if (currentPlayer.college) {
+					let college = await fetchAsync(currentPlayer.college.$ref);
+					obj.college = college.abbrev;
+				}
+
+				// form player obj
+				obj.id = currentPlayer.id;
+				obj.firstName = currentPlayer.firstName;
+				obj.lastName = currentPlayer.lastName;
+				obj.shortName = currentPlayer.shortName;
+				obj.weight = currentPlayer.weight;
+				obj.height = currentPlayer.displayHeight;
+				obj.country = currentPlayer.birthPlace.country;
+				obj.jersey = currentPlayer.jersey;
+				obj.position = currentPlayer.position.abbreviation;
+				obj.team = team.abbreviation;
+				obj.drafted = currentPlayer.draft ? currentPlayer.draft.year : "";
+
+				return obj;
+			})
+		);
+
+		// set state and show table once all the promises have been resolved
+		if (playersArr && playersArr.length > 0 && playersArr[0] !== undefined) {
+			setPlayers([...playersArr]);
+			setAllPlayers([...playersArr]);
+			setLoading(false);
+		}
 	};
+
+	// initial api call
+	useEffect(() => {
+		getAllPlayers();
+	}, []);
 
 	useEffect(() => {
 		handleFilters();
 		// used to bring pagination back to default page
 		setFilterChanged(!filterChanged);
-		getAllPlayers();
 	}, [letter, team, position, country]);
+
+	if (isLoading) {
+		return (
+			<Box sx={sx.loading}>
+				<CircularProgress size="3rem" />
+				Loading table
+			</Box>
+		);
+	}
 
 	return (
 		<Box sx={sx.page}>
@@ -176,7 +227,9 @@ const Players = () => {
 					</Select>
 				</FormControl>
 			</Box>
-			<PlayersTable playersData={filteredPlayers} flag={filterChanged} />
+			{players && (
+				<PlayersTable playersData={players} flag={filterChanged} />
+			)}
 		</Box>
 	);
 };
@@ -193,6 +246,14 @@ const sx = {
 		flexDirection: "column",
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	loading: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
+		height: "100vh",
+		// marginTop: "20vh"
 	},
 };
 
