@@ -1,4 +1,6 @@
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
+import StatBox from "../components/StatBox";
 import { AnyObject } from "../types";
 
 const Stats = () => {
@@ -38,7 +40,7 @@ const Stats = () => {
 				obj.id = stat.shortDisplayName;
 				obj.name = stat.displayName;
 
-                // get top 5 leaders
+				// get top 5 leaders
 				let leaders = stat.leaders.slice(0, 5);
 				let leadersArr = await Promise.all(
 					leaders.map(async (leader: AnyObject) => {
@@ -63,7 +65,7 @@ const Stats = () => {
 
 		// set state and show table once all the promises have been resolved
 		if (statsArr && statsArr.length > 0 && statsArr[0] !== undefined) {
-            setStats(statsArr);
+			setStats(statsArr);
 			console.log(statsArr);
 		}
 	};
@@ -72,18 +74,13 @@ const Stats = () => {
 		getStats();
 	}, []);
 
-	return <h1>Stats</h1>;
+	return (
+		<Box sx={{ minWidth: 275 }}>
+			{stats && stats.map((stat: AnyObject) => (
+				<StatBox data={stat} />
+			))}
+		</Box>
+	);
 };
 
 export default Stats;
-
-/*
-PPG
-Assists
-FG%
-Rebounds
-Steals
-Blocks
-FT%
-3PT%
-*/
