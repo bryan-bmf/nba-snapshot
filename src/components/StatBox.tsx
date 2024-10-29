@@ -6,7 +6,9 @@ const StatBox = (props: any) => {
 	return (
 		<Card variant="outlined" sx={sx.card}>
 			<CardContent sx={sx.content}>
-				<Typography variant="h6">{stat.name}</Typography>
+				<Typography variant="h6" sx={sx.title}>
+					{stat.name}
+				</Typography>
 				<Typography variant="body2">
 					<ol style={sx.ol}>
 						{stat.leaders.map((player: AnyObject, index: number) => {
@@ -35,7 +37,7 @@ const StatBox = (props: any) => {
 
 const sx = {
 	card: {
-		maxWidth: 300,
+		maxWidth: 260,
 		margin: "1rem 0",
 	},
 	content: {
@@ -53,6 +55,11 @@ const sx = {
 	},
 	team: {
 		fontSize: "10px",
+	},
+	title: {
+		textOverflow: "ellipsis",
+		overflow: "hidden",
+		whiteSpace: "nowrap",
 	},
 };
 

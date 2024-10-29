@@ -14,8 +14,7 @@ const Stats = () => {
 		// if current month is between oct and dec, then current year is the latter of the season
 		if (month >= 9 && month <= 11) currentYear += 1;
 
-		// return currentYear;
-		return 2024;
+		return currentYear;
 	};
 
 	const fetchAsync = async (url: string) => {
@@ -66,7 +65,6 @@ const Stats = () => {
 		// set state and show table once all the promises have been resolved
 		if (statsArr && statsArr.length > 0 && statsArr[0] !== undefined) {
 			setStats(statsArr);
-			console.log(statsArr);
 		}
 	};
 
@@ -75,12 +73,25 @@ const Stats = () => {
 	}, []);
 
 	return (
-		<Box sx={{ minWidth: 275 }}>
-			{stats && stats.map((stat: AnyObject) => (
-				<StatBox data={stat} />
-			))}
+		<Box sx={sx.container}>
+			<Box sx={sx.grid}>
+				{stats && stats.map((stat: AnyObject) => <StatBox data={stat} />)}
+			</Box>
 		</Box>
 	);
 };
+
+const sx = {
+    container: {
+        minWidth: 275,
+
+    },
+    grid: {
+        display: "grid",
+        gridTemplateColumns: ["auto", "auto auto auto"],
+        justifyContent: "center",
+        gap: 2
+    }
+}
 
 export default Stats;
