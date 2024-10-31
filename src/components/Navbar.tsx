@@ -87,7 +87,10 @@ const Navbar = () => {
 						<Button sx={sx.buttons}>Players</Button>
 					</Link>
 
-					<Button color="inherit">Stats</Button>
+					<Link to="/stats">
+						<Button sx={sx.buttons}>Stats</Button>
+					</Link>
+
 					<Button color="inherit">Switch</Button>
 				</Box>
 				{/* MOBILE VERSION */}
@@ -125,7 +128,7 @@ const Navbar = () => {
 const sx = {
 	header: {
 		display: { xs: "none", md: "flex" },
-		color:"#fff"
+		color: "#fff",
 	},
 	title: {
 		flexGrow: "1",
