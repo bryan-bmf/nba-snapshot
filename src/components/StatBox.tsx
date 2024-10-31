@@ -45,6 +45,9 @@ const sx = {
 		"&:last-child": {
 			paddingBottom: 1,
 		},
+		"li:first-child": {
+			fontWeight: "bold",
+		},
 	},
 	ol: {
 		paddingLeft: "1.3em",

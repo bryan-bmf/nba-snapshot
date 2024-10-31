@@ -1,10 +1,9 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import StatBox from "../components/StatBox";
 import { AnyObject } from "../types";
 
 const Stats = () => {
-	const [season, setSeason] = useState<number>();
 	const [stats, setStats] = useState<Array<AnyObject>>();
 
 	const currentSeasonYear = () => {
@@ -74,6 +73,9 @@ const Stats = () => {
 
 	return (
 		<Box sx={sx.container}>
+			<Box sx={{ pb: 2, textAlign: "center" }}>
+				<Typography variant="h3">Major Player Stats</Typography>
+			</Box>
 			<Box sx={sx.grid}>
 				{stats && stats.map((stat: AnyObject) => <StatBox data={stat} />)}
 			</Box>
@@ -82,16 +84,15 @@ const Stats = () => {
 };
 
 const sx = {
-    container: {
-        minWidth: 275,
-
-    },
-    grid: {
-        display: "grid",
-        gridTemplateColumns: ["auto", "auto auto auto"],
-        justifyContent: "center",
-        gap: 2
-    }
-}
+	container: {
+		minWidth: 275,
+	},
+	grid: {
+		display: "grid",
+		gridTemplateColumns: ["auto", "auto auto auto"],
+		justifyContent: "center",
+		gap: 2,
+	},
+};
 
 export default Stats;
