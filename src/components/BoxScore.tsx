@@ -44,7 +44,7 @@ const BoxScore = ({ game }: Props) => {
 
     // if game has not started, it will show date and time of game
     // else quarter and time left
-	let gameDetails = game.status.type.shortDetail;
+	let gameDetails = game.status.type.shortDetail.replace(" EST", "");
     let homeScore;
     let awayScore;
     let gameStatus = parseInt(game.status.type.id);

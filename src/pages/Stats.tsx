@@ -46,8 +46,8 @@ const Stats = () => {
 
 						// get player and team info
 						let player = await fetchAsync(leader.athlete.$ref);
-						let team = await fetchAsync(leader.team.$ref);
-
+						let team = leader.team ? await fetchAsync(leader.team.$ref) : "";
+						
 						playerObj.playerName = player.fullName;
 						playerObj.playerTeam = team.abbreviation;
 						playerObj.stat = leader.displayValue;
