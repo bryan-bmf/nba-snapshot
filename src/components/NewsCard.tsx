@@ -9,13 +9,11 @@ import {
 import { Link } from "react-router-dom";
 
 const NewsCard = (props: any) => {
-	console.log(props.data);
 	let image = props.data.images[0];
 	return (
 		<Card sx={sx.card}>
 			<CardMedia
-				// sx={{ height: image.height, width: image.width }}
-                sx={sx.image}
+				sx={sx.image}
 				image={image.url}
 				title={image.caption}
 			/>
@@ -39,14 +37,14 @@ const NewsCard = (props: any) => {
 };
 
 const sx = {
-    card: {
-        maxWidth: "500px",
-        maxHeight: "300px",
-    },
-    image: {
-        maxWidth: "inherit",
-        maxHeight: "inherit",
-    }
-}
+	card: {
+		maxWidth: ["300px", "500px"],
+		maxHeight: "550px",
+	},
+	image: {
+		width: ["300px", "500px"],
+		height: ["200px", "300px"],
+	},
+};
 
 export default NewsCard;

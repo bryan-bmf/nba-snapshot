@@ -24,7 +24,7 @@ const NewsFeed = () => {
 
 	return (
 		<Box sx={sx.container}>
-			<h1>Nurse Feed</h1>
+			<h1>News Feed</h1>
             {news && news.map(news => <NewsCard key={news.dataSourceIdentifier} data={news} />)}
 		</Box>
 	);
@@ -36,7 +36,8 @@ const sx = {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        gap: 4
+        gap: 4,
+        p: 2
     }
 }
 
