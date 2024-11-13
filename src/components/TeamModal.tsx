@@ -8,12 +8,19 @@ import {
     SelectChangeEvent,
     Typography,
 } from "@mui/material";
-import { useState } from "react";
 import { teamData } from "../seed/data";
 
 const TeamModal = (props: any) => {
 	let teams = teamData;
-	const [team, setTeam] = useState("");
+
+	const handleTeam = (e: SelectChangeEvent) => {
+		let team = e.target.value;
+		localStorage.setItem("team", team);
+
+		setTimeout(() => {
+			props.close();
+		}, 500);
+	};
 
 	return (
 		<Modal
@@ -30,9 +37,8 @@ const TeamModal = (props: any) => {
 				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Teams</InputLabel>
 					<Select
-						value={team}
 						label="All Players"
-						onChange={(e: SelectChangeEvent) => setTeam(e.target.value)}
+						onChange={handleTeam}
 					>
 						<MenuItem value="">
 							<em>All Teams</em>
@@ -51,9 +57,6 @@ const TeamModal = (props: any) => {
 
 const sx = {
 	style: {
-		// display: "flex",
-		// justifyContent: "center",
-		// alignItems: "center",
 		width: "100%",
 		bgcolor: "background.paper",
 		boxShadow: 24,
@@ -61,14 +64,13 @@ const sx = {
 	},
 	select: {
 		display: "flex",
-		// minWidth: ["100%", 120],
 	},
 	modal: {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
 		width: [325, 400],
-        margin: "auto",
+		margin: "auto",
 	},
 };
 
