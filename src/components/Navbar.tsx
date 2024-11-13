@@ -1,4 +1,6 @@
+import EditIcon from "@mui/icons-material/Edit";
 import GroupsIcon from "@mui/icons-material/Groups";
+import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
@@ -19,13 +21,21 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import TeamModal from "./TeamModal";
 
 const Navbar = () => {
 	const [open, setOpen] = useState<boolean>(false);
 	const toggleDrawer = () => setOpen(!open);
 
+	// MODAL STUFF
+	const [openModal, setOpenModal] = useState(false);
+
 	const links = [
 		{
+			label: "Home",
+			href: "/",
+			icon: <HomeIcon />,
+		},{
 			label: "Teams",
 			href: "/teams",
 			icon: <GroupsIcon />,
@@ -40,6 +50,11 @@ const Navbar = () => {
 			href: "/stats",
 			icon: <QueryStatsIcon />,
 		},
+		{
+			label: "Switch",
+			href: "",
+			icon: <EditIcon />,
+		},
 	];
 
 	const DrawerList = (
@@ -50,78 +65,94 @@ const Navbar = () => {
 			onClick={toggleDrawer}
 		>
 			<List sx={{ width: "inherit" }}>
-				{links.map((link, index) => (
-					<ListItem key={link.label} disablePadding>
-						<ListItemButton>
-							<ListItemIcon>{link.icon}</ListItemIcon>
-							<ListItemText primary={link.label} />
-						</ListItemButton>
-					</ListItem>
-				))}
+				{links.map((link) =>
+					link.label !== "Switch" ? (
+						<Link to={link.href} style={sx.links}>
+							<ListItem key={link.label} disablePadding>
+								<ListItemButton>
+									<ListItemIcon>{link.icon}</ListItemIcon>
+									<ListItemText primary={link.label} />
+								</ListItemButton>
+							</ListItem>
+						</Link>
+					) : (
+						<ListItem key={link.label} disablePadding>
+                            <ListItemButton onClick={() => setOpenModal(true)}>
+                                <ListItemIcon>{link.icon}</ListItemIcon>
+                                <ListItemText primary={link.label} />
+                            </ListItemButton>
+                        </ListItem>
+					)
+				)}
 			</List>
 		</Box>
 	);
 
 	return (
-		<AppBar position="static">
-			<Toolbar>
-				<Link to="/">
-					<IconButton
-						size="large"
-						edge="start"
-						aria-label="logo"
-						sx={sx.header}
-					>
-						<SportsBasketballIcon />
-					</IconButton>
-				</Link>
-				<Typography variant="h6" component="div" sx={sx.title}>
-					NBA Snapshot
-				</Typography>
-				<Box sx={sx.header}>
-					<Link to="/teams">
-						<Button sx={sx.buttons}>Teams</Button>
+		<Box>
+			<AppBar position="static">
+				<Toolbar>
+					<Link to="/">
+						<IconButton
+							size="large"
+							edge="start"
+							aria-label="logo"
+							sx={sx.header}
+						>
+							<SportsBasketballIcon />
+						</IconButton>
 					</Link>
+					<Typography variant="h6" component="div" sx={sx.title}>
+						NBA Snapshot
+					</Typography>
+					<Box sx={sx.header}>
+						<Link to="/teams">
+							<Button sx={sx.buttons}>Teams</Button>
+						</Link>
 
-					<Link to="/players">
-						<Button sx={sx.buttons}>Players</Button>
-					</Link>
+						<Link to="/players">
+							<Button sx={sx.buttons}>Players</Button>
+						</Link>
 
-					<Link to="/stats">
-						<Button sx={sx.buttons}>Stats</Button>
-					</Link>
+						<Link to="/stats">
+							<Button sx={sx.buttons}>Stats</Button>
+						</Link>
 
-					<Button color="inherit">Switch</Button>
-				</Box>
-				{/* MOBILE VERSION */}
-				<Box sx={sx.mobile}>
+						<Button color="inherit" onClick={() => setOpenModal(true)}>
+							Switch
+						</Button>
+					</Box>
+					{/* MOBILE VERSION */}
+					<Box sx={sx.mobile}>
+						<IconButton
+							size="large"
+							color="inherit"
+							edge="start"
+							aria-label="menu"
+							onClick={toggleDrawer}
+						>
+							<MenuIcon />
+						</IconButton>
+						<Drawer open={open} onClose={toggleDrawer} sx={sx.mobile}>
+							{DrawerList}
+						</Drawer>
+					</Box>
 					<IconButton
 						size="large"
 						color="inherit"
 						edge="start"
-						aria-label="menu"
-						onClick={toggleDrawer}
+						aria-label="logo"
+						sx={sx.mobile}
 					>
-						<MenuIcon />
+						<SportsBasketballIcon />
 					</IconButton>
-					<Drawer open={open} onClose={toggleDrawer} sx={sx.mobile}>
-						{DrawerList}
-					</Drawer>
-				</Box>
-				<IconButton
-					size="large"
-					color="inherit"
-					edge="start"
-					aria-label="logo"
-					sx={sx.mobile}
-				>
-					<SportsBasketballIcon />
-				</IconButton>
-				<Typography variant="h6" component="div" sx={sx.titleMobile}>
-					NBA Snapshot
-				</Typography>
-			</Toolbar>
-		</AppBar>
+					<Typography variant="h6" component="div" sx={sx.titleMobile}>
+						NBA Snapshot
+					</Typography>
+				</Toolbar>
+			</AppBar>
+			<TeamModal open={openModal} close={() => setOpenModal(false)} />
+		</Box>
 	);
 };
 
@@ -144,6 +175,10 @@ const sx = {
 	buttons: {
 		color: "white",
 		PointerEvent: "none",
+	},
+	links: {
+		textDecoration: "none",
+		color: "black",
 	},
 };
 
