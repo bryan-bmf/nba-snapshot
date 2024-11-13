@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     FormControl,
     InputLabel,
     MenuItem,
@@ -8,18 +9,24 @@ import {
     SelectChangeEvent,
     Typography,
 } from "@mui/material";
+import { useState } from "react";
 import { teamData } from "../seed/data";
 
 const TeamModal = (props: any) => {
 	let teams = teamData;
+	const [team, setTeam] = useState<string>(localStorage.getItem("team") || "");
 
-	const handleTeam = (e: SelectChangeEvent) => {
-		let team = e.target.value;
+	const handleTeam = () => {
 		localStorage.setItem("team", team);
 
 		setTimeout(() => {
 			props.close();
 		}, 500);
+	};
+
+	const clearTeam = () => {
+		localStorage.removeItem("team");
+		setTeam("");
 	};
 
 	return (
@@ -31,14 +38,15 @@ const TeamModal = (props: any) => {
 			aria-describedby="modal-modal-description"
 		>
 			<Box sx={sx.style}>
-				<Typography id="modal-modal-title" variant="h6" component="h2">
+				<Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
 					Select your favorite team
 				</Typography>
 				<FormControl variant="standard" sx={sx.select}>
 					<InputLabel>All Teams</InputLabel>
 					<Select
 						label="All Players"
-						onChange={handleTeam}
+						value={team}
+						onChange={(e: SelectChangeEvent) => setTeam(e.target.value)}
 					>
 						<MenuItem value="">
 							<em>All Teams</em>
@@ -50,6 +58,13 @@ const TeamModal = (props: any) => {
 						))}
 					</Select>
 				</FormControl>
+				<Box sx={sx.button}>
+					<Button onClick={clearTeam}>Clear Team</Button>
+					<Box>
+						<Button onClick={() => props.close()}>Cancel</Button>
+						<Button onClick={handleTeam}>Save</Button>
+					</Box>
+				</Box>
 			</Box>
 		</Modal>
 	);
@@ -71,6 +86,11 @@ const sx = {
 		alignItems: "center",
 		width: [325, 400],
 		margin: "auto",
+	},
+	button: {
+		display: "flex",
+		justifyContent: "space-between",
+		mt: 2,
 	},
 };
 
