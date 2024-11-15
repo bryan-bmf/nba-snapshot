@@ -18,14 +18,33 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useMemo, useState } from "react";
 import { AnyObject } from "../types";
+import { teamColors } from "../utils/theme";
 
 const PlayersTable = (props: any) => {
-	// const [players, setPlayers] = useState<Array<AnyObject>>(props.playersData);
 	let players: Array<AnyObject> = [...props.playersData];
 	const [orderBy, setOrderBy] = useState<string>("lastName");
 	const [order, setOrder] = useState<string>("asc");
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+	let team = localStorage.getItem("team") || "NBA";
+	let teamColor = teamColors[team as keyof typeof teamColors];
+	const [favTeam, setFavTeam] = useState<AnyObject>(teamColor);
+
+	useEffect(() => {
+		const handleStorage = () => {
+			if (localStorage.getItem("team")) {
+				teamColor = teamColors[team as keyof typeof teamColors];
+				setFavTeam(teamColor);
+			} else {
+				teamColor = teamColors.NBA;
+				setFavTeam(teamColor);
+			}
+		};
+
+		window.addEventListener("storage", handleStorage);
+		return () => window.removeEventListener("storage", handleStorage);
+	}, [teamColor]);
 
 	// check if mobile
 	const theme = useTheme();
@@ -128,7 +147,12 @@ const PlayersTable = (props: any) => {
 			<TableContainer sx={sx.container}>
 				<Table aria-label="simple table">
 					<TableHead>
-						<TableRow sx={sx.header}>
+						<TableRow
+							sx={sx.header}
+							style={{
+								backgroundColor: teamColor.secondary,
+							}}
+						>
 							{columns.map((column, index) => (
 								<TableCell
 									key={column.id}
@@ -139,6 +163,9 @@ const PlayersTable = (props: any) => {
 										component="span"
 										onClick={() => handleSort(column.id)}
 										sx={sx.label}
+										style={{
+											color: teamColor.font,
+										}}
 									>
 										{column.label}
 										{mobile ? null : (
@@ -170,7 +197,12 @@ const PlayersTable = (props: any) => {
 									<Typography variant="h5" gutterBottom p={2}>
 										No players found
 									</Typography>
-									<Button variant="contained" onClick={props.clearFilters}>Reset filters</Button>
+									<Button
+										variant="contained"
+										onClick={props.clearFilters}
+									>
+										Reset filters
+									</Button>
 								</TableCell>
 							</TableRow>
 						</TableBody>
@@ -228,7 +260,6 @@ const PlayersTable = (props: any) => {
 
 const sx = {
 	header: {
-		backgroundColor: "rgba(255, 7, 0)",
 		position: "sticky",
 		top: 0,
 		zIndex: 2,
@@ -237,7 +268,6 @@ const sx = {
 		verticalAlign: "middle",
 		opacity: 1,
 		marginBottom: "3px",
-		// fontSize: "x-small",
 	},
 	container: {
 		overflow: "auto",
@@ -250,7 +280,6 @@ const sx = {
 	},
 	label: {
 		cursor: "pointer",
-		// fontSize: "x-small",
 	},
 	stickyColumn: {
 		position: "sticky",

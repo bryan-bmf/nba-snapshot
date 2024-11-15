@@ -1,23 +1,24 @@
 import {
-    Box,
-    Button,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Modal,
-    Select,
-    SelectChangeEvent,
-    Typography,
+	Box,
+	Button,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Modal,
+	Select,
+	SelectChangeEvent,
+	Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { teamData } from "../seed/data";
 
 const TeamModal = (props: any) => {
 	let teams = teamData;
-	const [team, setTeam] = useState<string>(localStorage.getItem("team") || "");
+	const [team, setTeam] = useState<string>(localStorage.getItem("team") || "NBA");
 
 	const handleTeam = () => {
 		localStorage.setItem("team", team);
+		window.dispatchEvent(new Event('storage'))
 
 		setTimeout(() => {
 			props.close();
@@ -26,6 +27,7 @@ const TeamModal = (props: any) => {
 
 	const clearTeam = () => {
 		localStorage.removeItem("team");
+		window.dispatchEvent(new Event('storage'))
 		setTeam("");
 	};
 
