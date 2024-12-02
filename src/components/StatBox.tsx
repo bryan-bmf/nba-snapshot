@@ -37,8 +37,9 @@ const StatBox = (props: any) => {
 
 const sx = {
 	card: {
-		maxWidth: 260,
+		maxWidth: 300,
 		margin: "1rem 0",
+		width: 265
 	},
 	content: {
 		padding: 2,

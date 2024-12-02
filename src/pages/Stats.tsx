@@ -77,7 +77,7 @@ const Stats = () => {
 				<Typography variant="h3">Major Player Stats</Typography>
 			</Box>
 			<Box sx={sx.grid}>
-				{stats && stats.map((stat: AnyObject) => <StatBox data={stat} />)}
+				{stats && stats.map((stat: AnyObject) => <StatBox key={stat.id} data={stat} />)}
 			</Box>
 		</Box>
 	);
