@@ -148,6 +148,7 @@ const Navbar = () => {
 						edge="start"
 						aria-label="logo"
 						sx={sx.mobile}
+						style={{color: teamColor.secondary}}
 					>
 						<SportsBasketballIcon />
 					</IconButton>

@@ -42,6 +42,7 @@ const PlayersTable = (props: any) => {
 			}
 		};
 
+		// when team is changed, listen for the event to change colors
 		window.addEventListener("storage", handleStorage);
 		return () => window.removeEventListener("storage", handleStorage);
 	}, [teamColor]);
