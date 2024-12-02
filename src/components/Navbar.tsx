@@ -21,11 +21,15 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { teamColors } from "../utils/theme";
 import TeamModal from "./TeamModal";
 
 const Navbar = () => {
 	const [open, setOpen] = useState<boolean>(false);
 	const toggleDrawer = () => setOpen(!open);
+	let team = localStorage.getItem("team") || "NBA";
+
+	let teamColor = teamColors[team as keyof typeof teamColors];
 
 	// MODAL STUFF
 	const [openModal, setOpenModal] = useState(false);
@@ -67,7 +71,7 @@ const Navbar = () => {
 			<List sx={{ width: "inherit" }}>
 				{links.map((link) =>
 					link.label !== "Switch" ? (
-						<Link to={link.href} style={sx.links}>
+						<Link key={link.label} to={link.href} style={sx.links}>
 							<ListItem key={link.label} disablePadding>
 								<ListItemButton>
 									<ListItemIcon>{link.icon}</ListItemIcon>
@@ -90,7 +94,7 @@ const Navbar = () => {
 
 	return (
 		<Box>
-			<AppBar position="static">
+			<AppBar position="static" style={{backgroundColor: teamColor.main}}>
 				<Toolbar>
 					<Link to="/">
 						<IconButton
@@ -98,6 +102,7 @@ const Navbar = () => {
 							edge="start"
 							aria-label="logo"
 							sx={sx.header}
+							style={{color: teamColor.secondary}}
 						>
 							<SportsBasketballIcon />
 						</IconButton>
@@ -143,6 +148,7 @@ const Navbar = () => {
 						edge="start"
 						aria-label="logo"
 						sx={sx.mobile}
+						style={{color: teamColor.secondary}}
 					>
 						<SportsBasketballIcon />
 					</IconButton>
