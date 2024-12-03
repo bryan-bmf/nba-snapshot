@@ -42,7 +42,7 @@ const sx = {
 	scoreboard: {
 		display: "flex",
 		overflow: "auto",
-		pb: 4
+		mb: 4
 	},
 };
 

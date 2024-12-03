@@ -159,6 +159,7 @@ const PlayersTable = (props: any) => {
 									key={column.id}
 									align={column.numeric ? "right" : "left"}
 									sx={index === 0 && mobile ? sx.stickyHeader : null}
+									style={{backgroundColor: teamColor.secondary}}
 								>
 									<Box
 										component="span"
@@ -292,7 +293,6 @@ const sx = {
 		p: 2,
 	},
 	stickyHeader: {
-		backgroundColor: "rgba(255, 7, 0)",
 		position: "sticky",
 		left: 0,
 		borderRight: "1px solid rgba(239, 239, 240)",
