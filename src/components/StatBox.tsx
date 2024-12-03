@@ -9,16 +9,15 @@ const StatBox = (props: any) => {
 				<Typography variant="h6" sx={sx.title}>
 					{stat.name}
 				</Typography>
-				<Typography variant="body2">
 					<ol style={sx.ol}>
-						{stat.leaders.map((player: AnyObject, index: number) => {
+						{stat.leaders.map((player: AnyObject) => {
 							let name = player.playerName;
 							let team = (
 								<span style={sx.team}>{player.playerTeam}</span>
 							);
 
 							return (
-								<li>
+								<li key={player.playerName}>
 									<Box sx={sx.li}>
 										<Box>
 											{name} {team}
@@ -29,7 +28,6 @@ const StatBox = (props: any) => {
 							);
 						})}
 					</ol>
-				</Typography>
 			</CardContent>
 		</Card>
 	);
@@ -46,12 +44,17 @@ const sx = {
 		"&:last-child": {
 			paddingBottom: 1,
 		},
-		"li:first-child": {
+		"li:first-of-type": {
 			fontWeight: "bold",
 		},
 	},
 	ol: {
 		paddingLeft: "1.3em",
+		fontWeight: "400",
+		fontSize: "0.875rem",
+		lineHeight: "1.43",
+		letterSpacing: "0.01071em",
+		fontFamily: "Roboto"
 	},
 	li: {
 		display: "flex",
