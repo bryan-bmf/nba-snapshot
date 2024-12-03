@@ -10,7 +10,6 @@ import { AnyObject } from "../types";
 
 const BoxScore = ({ game }: Props) => {
 
-	console.log(game)	
     // calculate team's series record
 	const calculateSeriesRecord = (teamId: string) => {
 		let seriesRecord = "0-0";
@@ -127,7 +126,7 @@ const BoxScore = ({ game }: Props) => {
 								/>
 								<ListItemText
 									primary={team.team}
-									primaryTypographyProps={{ variant: "caption" }}
+									primaryTypographyProps={team.winner ? {variant: "caption", fontWeight: "600"} : {variant: "caption"} }
 									sx={sx.logo}
 								/>
 							</Box>
@@ -136,8 +135,7 @@ const BoxScore = ({ game }: Props) => {
                                 {/* If the game is in progress, show game score instead of team record */}
 								<ListItemText
 									secondary={gameStatus > 1 ? team.score : team.record}
-									secondaryTypographyProps={{ variant: "caption" }}
-									sx={team.winner ? sx.winner : null}
+									secondaryTypographyProps={team.winner ? {variant: "caption", fontWeight: "bold", color: "black"} : {variant: "caption"} }
 								/>
 							</Box>
 						</ListItem>
@@ -182,10 +180,7 @@ const sx = {
     },
     summary: {
         marginLeft: 2,
-    },
-	winner: {
-		fontWeight: "bold",
-	}
+    },	
 };
 
 interface Props {
