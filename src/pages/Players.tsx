@@ -153,7 +153,7 @@ const Players = () => {
 		return (
 			<Box sx={sx.loading}>
 				<CircularProgress size="3rem" />
-				Loading table
+				Loading table...
 			</Box>
 		);
 	}

@@ -50,7 +50,7 @@ const TeamModal = (props: any) => {
 						value={team}
 						onChange={(e: SelectChangeEvent) => setTeam(e.target.value)}
 					>
-						<MenuItem value="">
+						<MenuItem value="NBA">
 							<em>All Teams</em>
 						</MenuItem>
 						{teams.map((team) => (

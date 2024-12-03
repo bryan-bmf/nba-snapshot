@@ -1,10 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import StatBox from "../components/StatBox";
 import { AnyObject } from "../types";
 
 const Stats = () => {
 	const [stats, setStats] = useState<Array<AnyObject>>();
+	const [isLoading, setLoading] = useState(true); // Loading state
 
 	const currentSeasonYear = () => {
 		let currentYear = new Date().getFullYear();
@@ -46,8 +47,10 @@ const Stats = () => {
 
 						// get player and team info
 						let player = await fetchAsync(leader.athlete.$ref);
-						let team = leader.team ? await fetchAsync(leader.team.$ref) : "";
-						
+						let team = leader.team
+							? await fetchAsync(leader.team.$ref)
+							: "";
+
 						playerObj.playerName = player.fullName;
 						playerObj.playerTeam = team.abbreviation;
 						playerObj.stat = leader.displayValue;
@@ -64,6 +67,7 @@ const Stats = () => {
 		// set state and show table once all the promises have been resolved
 		if (statsArr && statsArr.length > 0 && statsArr[0] !== undefined) {
 			setStats(statsArr);
+			setLoading(false);
 		}
 	};
 
@@ -71,13 +75,25 @@ const Stats = () => {
 		getStats();
 	}, []);
 
+	if (isLoading) {
+		return (
+			<Box sx={sx.loading}>
+				<CircularProgress size="3rem" />
+				Loading stats...
+			</Box>
+		);
+	}
+
 	return (
 		<Box sx={sx.container}>
 			<Box sx={{ pb: 2, textAlign: "center" }}>
 				<Typography variant="h3">Major Player Stats</Typography>
 			</Box>
 			<Box sx={sx.grid}>
-				{stats && stats.map((stat: AnyObject) => <StatBox data={stat} />)}
+				{stats &&
+					stats.map((stat: AnyObject) => (
+						<StatBox key={stat.id} data={stat} />
+					))}
 			</Box>
 		</Box>
 	);
@@ -92,6 +108,14 @@ const sx = {
 		gridTemplateColumns: ["auto", "auto auto auto"],
 		justifyContent: "center",
 		gap: 2,
+	},
+	loading: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
+		height: "100vh",
+		// marginTop: "20vh"
 	},
 };
 
