@@ -3,7 +3,6 @@ import { teamData } from "../seed/data";
 import { AnyObject } from "../types";
 
 const Teams = () => {
-
 	let sortedData: AnyObject = {
 		West: {
 			Northwest: [],
@@ -32,15 +31,13 @@ const Teams = () => {
 		<Box sx={sx.flexContainer}>
 			<Box sx={sx.container}>
 				{/* HEADER ROW */}
-				<Box sx={{ pb: 2 }}>
-					<Typography variant="h3">NBA TEAMS</Typography>
-				</Box>
+				<h1>NBA TEAMS</h1>
 				{/* CONFERENCE ROW */}
 				<Box sx={sx.conference}>
 					{Object.entries(sortedData).map((conference: AnyObject) => (
 						<Paper key={conference[0]} sx={sx.paper} elevation={2}>
 							{/* Conference title */}
-							<Typography variant="h4" gutterBottom>
+							<Typography variant="h4" gutterBottom paddingTop={2}>
 								{conference[0]}
 							</Typography>
 
@@ -74,9 +71,9 @@ const sx = {
 	flexContainer: {
 		display: "flex",
 		justifyContent: "center",
-		alignItems: "center",
+		// alignItems: "center",
 		textAlign: "center",
-		pt: 2,
+		// pt: 2,
 	},
 	container: {
 		width: ["100vw", "90vw", "80vw", "75vw", "50vw"],
