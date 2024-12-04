@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import StatBox from "../components/StatBox";
 import { AnyObject } from "../types";
@@ -86,9 +86,7 @@ const Stats = () => {
 
 	return (
 		<Box sx={sx.container}>
-			<Box sx={{ pb: 2, textAlign: "center" }}>
-				<Typography variant="h3">Major Player Stats</Typography>
-			</Box>
+			<h1>MAJOR PLAYER STATS</h1>
 			<Box sx={sx.grid}>
 				{stats &&
 					stats.map((stat: AnyObject) => (
@@ -101,7 +99,10 @@ const Stats = () => {
 
 const sx = {
 	container: {
+		display: "flex",
+		flexDirection: "column",
 		minWidth: 275,
+		textAlign: "center",
 	},
 	grid: {
 		display: "grid",
